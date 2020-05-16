@@ -92,7 +92,7 @@ export class AuthRepository {
   // }
 
   logout(): Observable<ShowResponse<string>> {
-    return this.store.select(getIsLoading).pipe(
+    return this.store.select(getUser).pipe(
       take(1),
       filter(i => !i),
       switchMap(() => {
