@@ -1,0 +1,17 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form)">
+  <label for="name">Name</label>
+    <input id="name" type="text" placeholder="Name" formControlName="name">
+
+  <label for="email">Email</label>
+  <input id="email" type="text" placeholder="Email" formControlName="email">
+
+  <label for="age">Age</label>
+  <input id="age" type="number" placeholder="Age" formControlName="age">
+
+  <label for="password">Password</label>
+  <input id="password" type="text" placeholder="Password" formControlName="password">
+
+  <button type="submit">Submit</button>
+</form>
+
+<p>Already have an account? <a [routerLink]="'/login'">Login</a></p>
