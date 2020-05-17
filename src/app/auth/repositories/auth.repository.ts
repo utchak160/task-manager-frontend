@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {Store} from '@ngrx/store';
-import {AppState, getIsLoading, getIsLoggedIn, getUser, getUserState} from '../store';
+import {AppState, getIsLoading, getIsLoggedIn, getUser } from '../store';
 import {Observable} from 'rxjs';
 import {LoginResponse} from '../response/member';
 import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';

@@ -21,7 +21,7 @@ export class HttpService {
       params: data
     };
     return this.http.get<ShowResponse<T>>(this.baseUrl + endPoint, option)
-      .pipe(map(res => res.data),
+      .pipe(map(res => res),
         catchError(this.handleError)
       );
   }

@@ -5,7 +5,8 @@ export const TaskFetching = createAction(
   '[Task] Task Fetching'
 );
 export const TaskFetched = createAction(
-  '[Task] Task Fetched'
+  '[Task] Task Fetched',
+  props<{ task: Task[] }>()
 );
 export const TaskFetchFailed = createAction(
   '[Task] Task Fetching'

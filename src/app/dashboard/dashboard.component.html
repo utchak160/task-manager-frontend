@@ -1,0 +1,20 @@
+<h1>Tasks</h1>
+<div *ngFor="let task of task$">
+  <ul>
+    <li>{{task.description}}: {{task.completed}}</li>
+  </ul>
+</div>
+  <li></li>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit(form)">
+
+  <label for="desc">Description</label>
+  <input id="desc" type="text" placeholder="Type here..." formControlName="description">
+
+
+  <label>Completed?</label>
+  <label for="true">True</label><input id="true" type="checkbox" value="true" formControlName="completed">
+  <label for="false">False</label><input id="false" type="checkbox" value="false" formControlName="completed">
+
+  <button type="submit">Submit</button>
+</form>
