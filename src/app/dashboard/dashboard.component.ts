@@ -50,6 +50,7 @@ export class DashboardComponent implements OnInit {
     this.taskRepository.addTask(form.value).subscribe((res) => {
       console.log('[Select]', this.tasks);
       console.log(res);
+      this.form.reset();
     }, error => {
       console.log('[Task]', error);
       alert(error.member);
