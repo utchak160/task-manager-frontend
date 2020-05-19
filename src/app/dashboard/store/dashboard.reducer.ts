@@ -12,12 +12,7 @@ export interface TaskState {
 }
 
 export const initialState: TaskState = {
-  task: [
-    {
-      description: 'NodeJs',
-      completed: true
-    }
-  ],
+  task: [],
   isFetched: false,
   isCreated: false,
   loading: false,
@@ -39,7 +34,7 @@ export function TaskReducer(state: TaskState = initialState, action: Action) {
 }
 
 export const _getTask = (state: TaskState) => state.task;
-export const _getLadingTask = (state: TaskState) => state.loading;
+export const _getLoadingTask = (state: TaskState) => state.loading;
 
 // on(UserActions.loginSuccess, (state, { user }) => {
 //     return {

@@ -12,7 +12,7 @@ import {Task} from '../../models/task';
 export class TaskService {
   constructor(private http: HttpService) {
   }
-  getTask(): Observable<ShowResponse<Task[]>> {
+  getTask(): Observable<Task[]> {
     return this.http.get<Task[]>('/tasks', {}, true);
   }
   addTask(data): Observable<ShowResponse<TaskResponse>> {

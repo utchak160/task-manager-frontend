@@ -1,9 +1,7 @@
 import {State, reducer, _getUser, _getMember, _isLoading, _isLoggedIn, _isRegistered} from './auth.reducer';
 import {ActionReducerMap, createSelector} from '@ngrx/store';
 import {counterReducer} from '../../counter.reducer';
-import {_getLadingTask, _getTask, TaskReducer, TaskState} from '../../dashboard/store/dashboard.reducer';
-import {Task} from '../../models/task';
-import {User} from '../../models/user';
+import { _getLoadingTask, _getTask, TaskReducer, TaskState} from '../../dashboard/store/dashboard.reducer';
 
 export interface AppState {
   user: State;
@@ -17,6 +15,7 @@ export const rootReducer: ActionReducerMap<AppState> = {
   count: counterReducer
 };
 
+export const getMemberState = state => state.member;
 export const getUserState = state => state.user;
 export const getTaskState = state => state.task;
 
@@ -31,7 +30,6 @@ export const getMember = createSelector(
 );
 
 export const getTask = createSelector(
-  getUserState,
   getTaskState,
   _getTask,
 );
@@ -39,7 +37,7 @@ export const getTask = createSelector(
 export const getTaskLoading = createSelector(
   getUserState,
   getTaskState,
-  _getLadingTask
+  _getLoadingTask
 );
 
 export const getIsLoading = createSelector(

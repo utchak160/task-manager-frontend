@@ -20,20 +20,23 @@ import {TaskState} from './store/dashboard.reducer';
 export class DashboardComponent implements OnInit {
 
   form: FormGroup;
-  tasks: Observable<TaskState>;
-  task$: ShowResponse<Task[]>;
+  tasks: Task[];
+  task$: Task[];
   fetch: Subscription;
-  visibleTask$: any;
-  constructor(private formBuilder: FormBuilder, private taskRepository: TaskRepository, private store: Store<AppState>, private http: HttpService) {
-    this.tasks = store.pipe(select('task'));
+  constructor(private formBuilder: FormBuilder,
+              private taskRepository: TaskRepository,
+              private store: Store<AppState>) {
+    // this.tasks = store.pipe(select('task'));
     this.form = this.formBuilder.group({
       description: ['', [Validators.required, Validators.email]],
       completed: ['', Validators.required]
     });
   }
   ngOnInit() {
-     this.tasks = this.store.pipe(select('task'));
-     console.log(this.tasks);
+     this.store.pipe(select(getTask)).subscribe((res) => {
+       this.tasks = res;
+     });
+     console.log('[Select]', this.tasks);
      this.fetch = this.taskRepository.getTask().subscribe((res) => {
       console.log('[Task]', res);
       this.task$ = res;
@@ -45,6 +48,7 @@ export class DashboardComponent implements OnInit {
 
   onSubmit(form) {
     this.taskRepository.addTask(form.value).subscribe((res) => {
+      console.log('[Select]', this.tasks);
       console.log(res);
     }, error => {
       console.log('[Task]', error);

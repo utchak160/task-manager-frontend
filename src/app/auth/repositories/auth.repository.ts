@@ -40,7 +40,6 @@ export class AuthRepository {
         // const token = res.token.toString();
         if ('token' in res) {
           localStorage.setItem(Constants.AUTH_TOKEN, res.token);
-          localStorage.setItem(Constants.USER_MESSAGE, res.message);
         }
         console.log('[Res]', res);
         console.log('[Member]', member);
@@ -102,7 +101,6 @@ export class AuthRepository {
       tap((res) => {
         console.log('[Auth]', res);
         localStorage.removeItem(Constants.AUTH_TOKEN);
-        localStorage.removeItem(Constants.USER_MESSAGE);
         this.store.dispatch(LogoutSuccess());
       }, e => {
         this.store.dispatch(LogoutFailed());

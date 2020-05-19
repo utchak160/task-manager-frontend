@@ -20,7 +20,7 @@ export class HttpService {
       headers: this.buildHeader(useAuthHeader),
       params: data
     };
-    return this.http.get<ShowResponse<T>>(this.baseUrl + endPoint, option)
+    return this.http.get<T>(this.baseUrl + endPoint, option)
       .pipe(map(res => res),
         catchError(this.handleError)
       );

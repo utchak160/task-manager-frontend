@@ -16,7 +16,7 @@ import {Task} from '../../models/task';
 export class TaskRepository {
   constructor(private taskService: TaskService, private store: Store<AppState>) {
   }
-  getTask(): Observable<ShowResponse<Task[]>> {
+  getTask(): Observable<Task[]> {
     return this.store.select(getTaskLoading).pipe(
       take(1),
       filter(i => !i),
@@ -35,7 +35,7 @@ export class TaskRepository {
     );
   }
   addTask(task): Observable<ShowResponse<TaskResponse>> {
-    return this.store.select(getTask).pipe(
+    return this.store.select(getTaskLoading).pipe(
       take(1),
       filter(i => !i),
       switchMap(() => {
