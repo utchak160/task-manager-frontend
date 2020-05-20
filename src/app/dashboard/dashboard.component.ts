@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {TaskRepository} from '../auth/repositories/task.repository';
-import {Observable, Subscription} from 'rxjs';
+import { Subscription} from 'rxjs';
 import {Task} from '../models/task';
-import {ShowResponse} from '../auth/response/showResponse';
-import {TaskResponse} from '../auth/response/task';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
-import {AppState, getTask} from '../auth/store';
-import {TaskFetched, TaskSuccess} from './store/dashboard.action';
-import {HttpService} from '../auth/services/http.service';
-import {TaskState} from './store/dashboard.reducer';
+import {getProfile, getTask} from '../auth/store';
+import * as fromApp from '../auth/store/index';
+import {AuthRepository} from '../auth/repositories/auth.repository';
+import {User} from '../models/user';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,12 +18,16 @@ import {TaskState} from './store/dashboard.reducer';
 export class DashboardComponent implements OnInit {
 
   form: FormGroup;
+  profile: User;
+  isFetched = false;
   tasks: Task[];
   task$: Task[];
   fetch: Subscription;
   constructor(private formBuilder: FormBuilder,
+              private router: Router,
               private taskRepository: TaskRepository,
-              private store: Store<AppState>) {
+              private authRepository: AuthRepository,
+              private store: Store<fromApp.AppState>) {
     // this.tasks = store.pipe(select('task'));
     this.form = this.formBuilder.group({
       description: ['', [Validators.required, Validators.email]],
@@ -36,6 +38,9 @@ export class DashboardComponent implements OnInit {
      this.store.pipe(select(getTask)).subscribe((res) => {
        this.tasks = res;
      });
+    //  this.store.pipe(select(getProfile)).subscribe((res) => {
+    //   this.profile = res;
+    // });
      console.log('[Select]', this.tasks);
      this.fetch = this.taskRepository.getTask().subscribe((res) => {
       console.log('[Task]', res);
@@ -55,6 +60,31 @@ export class DashboardComponent implements OnInit {
       console.log('[Task]', error);
       alert(error.member);
     });
+  }
+
+  getProfile() {
+    this.authRepository.getProfile().subscribe((res) => {
+      console.log('[Dashboard]', res);
+      this.profile = res.user;
+      console.log('[Profile]', this.profile);
+      this.isFetched = true;
+    }, error => {
+      this.isFetched = false;
+      alert(error.message);
+      console.log('[Dashboard]', error);
+    });
+  }
+
+  onDelete() {
+    if (confirm('Are you sure you want to delete?')) {
+      this.authRepository.deleteProfile().subscribe((res) => {
+        console.log('[Delete Success]', res);
+        this.router.navigateByUrl('/register');
+      }, error => {
+        console.log('[Delete Fail]', error);
+        alert(error.message);
+      });
+    }
   }
 }
 

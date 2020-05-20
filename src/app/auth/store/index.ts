@@ -1,4 +1,4 @@
-import {State, reducer, _getUser, _getMember, _isLoading, _isLoggedIn, _isRegistered} from './auth.reducer';
+import {State, reducer, _getUser, _getMember, _isLoading, _isLoggedIn, _isRegistered, _getProfile} from './auth.reducer';
 import {ActionReducerMap, createSelector} from '@ngrx/store';
 import {counterReducer} from '../../counter.reducer';
 import { _getLoadingTask, _getTask, TaskReducer, TaskState} from '../../dashboard/store/dashboard.reducer';
@@ -15,7 +15,6 @@ export const rootReducer: ActionReducerMap<AppState> = {
   count: counterReducer
 };
 
-export const getMemberState = state => state.member;
 export const getUserState = state => state.user;
 export const getTaskState = state => state.task;
 
@@ -53,4 +52,9 @@ export const getIsLoggedIn = createSelector(
 export const getIsRegistered = createSelector(
   getUserState,
   _isRegistered
+);
+
+export const getProfile = createSelector(
+  getUserState,
+  _getProfile
 );

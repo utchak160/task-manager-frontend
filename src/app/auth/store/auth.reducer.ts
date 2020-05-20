@@ -5,6 +5,7 @@ import * as AuthActions from './auth.action';
 export interface State {
   user: User;
   member: Member;
+  profile: User;
   isRegistered: boolean;
   isLoggedIn: boolean;
   loading: boolean;
@@ -14,6 +15,7 @@ export interface State {
 export const initialState: State = {
   user: null,
   member: null,
+  profile: null,
   isRegistered: false,
   isLoggedIn: false,
   loading: false,
@@ -28,12 +30,30 @@ const AuthReducer = createReducer(
   on(AuthActions.LoginSent, state => ({...state, loading: true})),
   on(AuthActions.LoginSuccess, (state, {member}) => ({...state, loaded: true, loading: false, isLoggedIn: true, member})),
   on(AuthActions.LoginFailed, state => ({...state, loading: false, isLoggedIn: false})),
-  on(AuthActions.LogoutSent, state => ({...state, loading: true})),
+  on(AuthActions.LogoutSent, AuthActions.ProfileFetchStart, state => ({...state, loading: true})),
   on(AuthActions.LogoutSuccess, state => ({...state, loading: false, isLoggedIn: false})),
-  on(AuthActions.LogoutFailed, state => {
+  on(AuthActions.LogoutFailed, AuthActions.ProfileFetchFail, state => {
     return {
       ...state,
       loading: false,
+    };
+  }),
+  on(AuthActions.ProfileFetched, (state, {profile}) => {
+    return {
+      ...state,
+      loading: false,
+      profile
+    };
+  }),
+  on(AuthActions.ProfileDeleted, state => {
+    return {
+      ...state,
+      initialState
+    };
+  }),
+  on(AuthActions.ProfileDeleteFail, state => {
+    return {
+      ...state
     };
   })
 );
@@ -58,3 +78,4 @@ export const _getMember = (state: State) => state.member;
 export const _isLoading = (state: State) => state.loading;
 export const _isLoggedIn = (state: State) => state.isLoggedIn;
 export const _isRegistered = (state: State) => state.isRegistered;
+export const _getProfile = (state: State) => state.profile;

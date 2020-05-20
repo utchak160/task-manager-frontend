@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {RegisterResponse} from '../response/user';
 import {LoginResponse} from '../response/member';
 import {ShowResponse} from '../response/showResponse';
+import {User} from '../../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,11 @@ export class AuthService {
     return this.http.post<string>('/users/logout', { }, true);
   }
 
-  getProfile(): Observable<ShowResponse<LoginResponse>> {
-    return this.http.post<LoginResponse>('/users/profile', {}, true);
+  getProfile(): Observable<User> {
+    return this.http.get<User>('/users/profile', {}, true);
+  }
+
+  deleteProfile(): Observable<string> {
+    return this.http.delete<string>('/users/profile', true);
   }
 }

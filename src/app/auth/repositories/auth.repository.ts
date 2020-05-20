@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {Store} from '@ngrx/store';
-import {AppState, getIsLoading, getIsLoggedIn, getUser } from '../store';
+import {AppState, getIsLoading, getIsLoggedIn, getProfile, getUser} from '../store';
 import {Observable} from 'rxjs';
 import {LoginResponse} from '../response/member';
 import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';
@@ -10,7 +10,7 @@ import {
   LoginSent,
   LoginSuccess, LogoutFailed,
   LogoutSent,
-  LogoutSuccess,
+  LogoutSuccess, ProfileDeleted, ProfileDeleteFail, ProfileFetched, ProfileFetchFail, ProfileFetchStart,
   RegisterFailed,
   RegisterSent,
   RegisterSuccess
@@ -18,6 +18,8 @@ import {
 import {Constants} from '../../utils/constants';
 import {RegisterResponse} from '../response/user';
 import {ShowResponse} from '../response/showResponse';
+import {User} from '../../models/user';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +27,7 @@ import {ShowResponse} from '../response/showResponse';
 
 export class AuthRepository {
   constructor(private authService: AuthService,
+              private router: Router,
               private store: Store<AppState>) {
   }
 
@@ -69,27 +72,6 @@ export class AuthRepository {
       })
     );
   }
-
-  // logout(): Observable<ShowResponse<string>> {
-  //   return this.store.select(getUser).pipe(
-  //     take(1),
-  //     filter(i => !i),
-  //     switchMap(() => {
-  //       this.store.dispatch(LogoutSent());
-  //       return this.authService.logout();
-  //     }),
-  //     tap((res) => {
-  //       localStorage.removeItem(Constants.AUTH_TOKEN);
-  //       localStorage.removeItem(Constants.USER_MESSAGE);
-  //       console.log(res);
-  //       this.store.dispatch(LogoutSuccess());
-  //     }, e => {
-  //       console.log('[Repo]', e);
-  //       this.store.dispatch(LogoutFailed());
-  //     })
-  //   );
-  // }
-
   logout(): Observable<ShowResponse<string>> {
     return this.store.select(getUser).pipe(
       take(1),
@@ -110,13 +92,38 @@ export class AuthRepository {
     );
   }
 
-  // getProfile(): Observable<LoginResponse> {
-  //   return this.store.select(getUser).pipe(
-  //     take(1),
-  //     filter(i => !i),
-  //     switchMap(() => {
-  //
-  //     })
-  //   )
-  // }
+ getProfile(): Observable<User> {
+    return this.store.select(getIsLoading).pipe(
+      take(1),
+      filter(i => !i),
+      switchMap(() => {
+        this.store.dispatch(ProfileFetchStart());
+        return this.authService.getProfile();
+      }),
+      tap((res) => {
+        this.store.dispatch(ProfileFetched({profile: res}));
+        console.log('[Fetch Success]', res);
+      }, e => {
+        this.store.dispatch(ProfileFetchFail());
+        console.log('[Fetch Failed]', e);
+        alert(e.message);
+      })
+    );
+ }
+ deleteProfile(): Observable<string> {
+    return this.store.select(getIsLoggedIn).pipe(
+      switchMap(() => {
+        return this.authService.deleteProfile();
+      }),
+      tap((res) => {
+        this.store.dispatch(ProfileDeleted());
+        console.log('[Profile Deleted]', res);
+        this.logout();
+      }, e => {
+        this.store.dispatch(ProfileDeleteFail());
+        console.log('[Delete Fail]');
+        alert(e.message);
+      })
+    );
+ }
 }

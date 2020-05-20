@@ -4,6 +4,7 @@ import {ShowResponse} from '../response/showResponse';
 import {Constants} from '../../utils/constants';
 import {catchError, map} from 'rxjs/operators';
 import {of, throwError} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +49,8 @@ export class HttpService {
     const option = {
       headers: this.buildHeader(useAuthHeader)
     };
-    return this.http.delete<ShowResponse<T>>(this.baseUrl + endPoint, option)
-      .pipe(map(res => res.data),
+    return this.http.delete<T>(this.baseUrl + endPoint, option)
+      .pipe(map(res => res),
         catchError(this.handleError)
       );
   }
@@ -80,8 +81,6 @@ export class HttpService {
   private handleError(httpErrorResponse: HttpErrorResponse) {
     if (httpErrorResponse.status === 401) {
       console.log(httpErrorResponse.error);
-      localStorage.removeItem(Constants.AUTH_TOKEN);
-      localStorage.removeItem(Constants.USER_MESSAGE);
       return throwError(httpErrorResponse);
     } else {
       const error = httpErrorResponse.error;

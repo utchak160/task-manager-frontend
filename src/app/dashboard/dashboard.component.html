@@ -4,7 +4,7 @@
     <li>{{task.description}}: {{task.completed}}</li>
   </ul>
 </div>
-  <li></li>
+<li></li>
 
 <form [formGroup]="form" (ngSubmit)="onSubmit(form)">
 
@@ -18,3 +18,14 @@
 
   <button type="submit">Submit</button>
 </form>
+
+<button (click)="getProfile()">My Profile</button>
+<ng-container *ngIf="isFetched">
+  <ol>
+    <li>Name: {{profile.name}}</li>
+    <li>Email: {{profile.email}}</li>
+    <li>Age: {{profile.age}}</li>
+  </ol>
+</ng-container>
+
+<button (click)="onDelete()">Delete Account?</button>
