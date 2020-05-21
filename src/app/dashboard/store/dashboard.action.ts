@@ -21,6 +21,17 @@ export const TaskSuccess = createAction(
 export const TaskFailed = createAction(
   '[Task] Task failed'
 );
+export const TaskRemoved = createAction(
+  '[Task] Task Removed',
+  props<{index: number}>()
+);
+export const TaskUpdated = createAction(
+  '[Task] Task Update',
+  props<{index: number, task: Task}>()
+);
+export const ClearStore = createAction(
+  '[Task] Clear Store'
+);
 
 // export const loginSuccess = createAction<string, { user: IUser }>(
 //   '[User] Login Success',

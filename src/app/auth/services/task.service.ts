@@ -18,4 +18,7 @@ export class TaskService {
   addTask(data): Observable<ShowResponse<TaskResponse>> {
     return this.http.post<TaskResponse>('/tasks', data, true);
   }
+  removeTask(id): Observable<string> {
+    return this.http.delete<string>('/tasks/' + id, true);
+  }
 }

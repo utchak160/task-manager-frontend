@@ -9,6 +9,7 @@ import * as fromApp from '../auth/store/index';
 import {AuthRepository} from '../auth/repositories/auth.repository';
 import {User} from '../models/user';
 import {Router} from '@angular/router';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +22,6 @@ export class DashboardComponent implements OnInit {
   profile: User;
   isFetched = false;
   tasks: Task[];
-  task$: Task[];
   fetch: Subscription;
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -38,13 +38,12 @@ export class DashboardComponent implements OnInit {
      this.store.pipe(select(getTask)).subscribe((res) => {
        this.tasks = res;
      });
-    //  this.store.pipe(select(getProfile)).subscribe((res) => {
-    //   this.profile = res;
-    // });
+     this.store.pipe(select('user')).pipe(map(UserState => UserState.profile)).subscribe((res) => {
+      this.profile = res;
+    });
      console.log('[Select]', this.tasks);
      this.fetch = this.taskRepository.getTask().subscribe((res) => {
       console.log('[Task]', res);
-      this.task$ = res;
     }, error => {
       console.log('[Task]', error);
       alert(error.member);
@@ -65,7 +64,7 @@ export class DashboardComponent implements OnInit {
   getProfile() {
     this.authRepository.getProfile().subscribe((res) => {
       console.log('[Dashboard]', res);
-      this.profile = res.user;
+      // this.profile = res;
       console.log('[Profile]', this.profile);
       this.isFetched = true;
     }, error => {
@@ -85,6 +84,21 @@ export class DashboardComponent implements OnInit {
         alert(error.message);
       });
     }
+  }
+
+  onRemove(i: number, id: string) {
+    console.log(i);
+    // this.tasks.splice(i, 1);
+    // this.store.select('task').pipe(map(state => state.task.filter(task => task._id === id)))
+    //   .subscribe((res) => {
+    //     console.log(res);
+    //     this.taskRepository.removeTask(id, i);
+    //   }, error => {
+    //     console.log(error);
+    //   });
+    this.taskRepository.removeTask(id, i).subscribe((res) => {
+      console.log(res);
+    });
   }
 }
 

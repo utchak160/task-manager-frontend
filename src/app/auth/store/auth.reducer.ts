@@ -35,7 +35,7 @@ const AuthReducer = createReducer(
   on(AuthActions.LogoutFailed, AuthActions.ProfileFetchFail, state => {
     return {
       ...state,
-      loading: false,
+      initialState
     };
   }),
   on(AuthActions.ProfileFetched, (state, {profile}) => {

@@ -26,7 +26,23 @@ const taskReducer = createReducer(
   on(TaskAction.TaskFetchFailed, state => ({...state, loading: false})),
   on(TaskAction.TaskSent, state => ({...state, loading: true})),
   on(TaskAction.TaskSuccess, (state,  { task }) => ({...state, loading: false, loaded: true, task: [...state.task, task]})),
-  on(TaskAction.TaskFailed, state => ({...state, loading: false}))
+  on(TaskAction.TaskFailed, state => ({...state, loading: false})),
+  on(TaskAction.TaskRemoved, (state, {index}) => {
+    return {
+      ...state,
+      loading: false,
+      task: state.task.filter((e, eIndex) => {
+      return index !== eIndex;
+    })
+      // task: state.task.splice(index, 1)
+    };
+  }),
+  on(TaskAction.ClearStore, state => {
+    return {
+      ...state,
+      task: []
+    };
+  })
 );
 
 export function TaskReducer(state: TaskState = initialState, action: Action) {
@@ -45,3 +61,27 @@ export const _getLoadingTask = (state: TaskState) => state.loading;
 //     };
 //   }
 // ),
+
+//
+// on(EventAction.DEL_EVENT, (state, {index}) => {
+//   return {
+//     ...state,
+//     event: state.event.filter((e, eIndex) => {
+//       return eIndex !== index;
+//     })
+//   };
+// }),
+//   on(EventAction.UPDATE_EVENT, (state, {index, event}) => {
+//     const SelectedEvent = state.event[index];
+//     const updatedEvent = {
+//       ...SelectedEvent,
+//       ...event
+//     };
+//     const updatedEvents = [...state.event];
+//     updatedEvents[index] = updatedEvent;
+//     return {
+//       ...state,
+//       event: updatedEvents
+//     };
+//   })
+// );

@@ -1,4 +1,4 @@
 export interface ShowResponse<T> {
-    json(): any;
+    // json(): any;
   data: T;
 }

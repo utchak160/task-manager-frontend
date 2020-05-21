@@ -20,6 +20,7 @@ import {RegisterResponse} from '../response/user';
 import {ShowResponse} from '../response/showResponse';
 import {User} from '../../models/user';
 import {Router} from '@angular/router';
+import {ClearStore} from '../../dashboard/store/dashboard.action';
 
 @Injectable({
   providedIn: 'root'
@@ -84,6 +85,7 @@ export class AuthRepository {
         console.log('[Auth]', res);
         localStorage.removeItem(Constants.AUTH_TOKEN);
         this.store.dispatch(LogoutSuccess());
+        this.store.dispatch(ClearStore());
       }, e => {
         this.store.dispatch(LogoutFailed());
         alert(e.message);
@@ -117,6 +119,7 @@ export class AuthRepository {
       }),
       tap((res) => {
         this.store.dispatch(ProfileDeleted());
+        this.store.dispatch(ClearStore());
         console.log('[Profile Deleted]', res);
         this.logout();
       }, e => {
