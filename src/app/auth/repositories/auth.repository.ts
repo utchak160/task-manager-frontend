@@ -129,4 +129,17 @@ export class AuthRepository {
       })
     );
  }
+
+ uploadProfile(formData): Observable<ShowResponse<string>> {
+    return this.authService.uploadProfile(formData).pipe(
+      take(1),
+      tap((res) => {
+        console.log(res);
+        alert('Image Uploaded Successfully');
+      }, e => {
+        console.log(e);
+        alert(e.message);
+      })
+    );
+ }
 }

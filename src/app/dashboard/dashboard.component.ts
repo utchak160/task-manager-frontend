@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {TaskRepository} from '../auth/repositories/task.repository';
-import { Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {Task} from '../models/task';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {select, Store} from '@ngrx/store';
@@ -17,12 +17,14 @@ import {map} from 'rxjs/operators';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-
+  @ViewChild('fileUpload', {static: false}) fileUpload: ElementRef;
+  files: [];
   form: FormGroup;
   profile: User;
   isFetched = false;
   tasks: Task[];
   fetch: Subscription;
+
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private taskRepository: TaskRepository,
@@ -34,15 +36,16 @@ export class DashboardComponent implements OnInit {
       completed: ['', Validators.required]
     });
   }
+
   ngOnInit() {
-     this.store.pipe(select(getTask)).subscribe((res) => {
-       this.tasks = res;
-     });
-     this.store.pipe(select('user')).pipe(map(UserState => UserState.profile)).subscribe((res) => {
+    this.store.pipe(select(getTask)).subscribe((res) => {
+      this.tasks = res;
+    });
+    this.store.pipe(select('user')).pipe(map(UserState => UserState.profile)).subscribe((res) => {
       this.profile = res;
     });
-     console.log('[Select]', this.tasks);
-     this.fetch = this.taskRepository.getTask().subscribe((res) => {
+    console.log('[Select]', this.tasks);
+    this.fetch = this.taskRepository.getTask().subscribe((res) => {
       console.log('[Task]', res);
     }, error => {
       console.log('[Task]', error);
@@ -98,6 +101,17 @@ export class DashboardComponent implements OnInit {
     //   });
     this.taskRepository.removeTask(id, i).subscribe((res) => {
       console.log(res);
+    });
+  }
+
+  uploadFile(file) {
+    const formData = new FormData();
+    formData.append('file', file.data);
+    file.inProgress = true;
+    this.authRepository.uploadProfile(formData).subscribe((res) => {
+      console.log(res.data);
+    }, error => {
+      console.log(error);
     });
   }
 }

@@ -34,4 +34,8 @@ export class AuthService {
   deleteProfile(): Observable<string> {
     return this.http.delete<string>('/users/profile', true);
   }
+
+  uploadProfile(formData): Observable<ShowResponse<string>> {
+    return this.http.post<string>('/user/profile/avatar', formData, true);
+  }
 }

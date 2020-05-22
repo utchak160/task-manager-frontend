@@ -30,4 +30,9 @@
 
 <button (click)="onDelete()">Delete Account?</button>
 
+<form>
+  <label for="fileUpload">Choose File</label>
+  <input type="file" #fileUpload id="fileUpload" name="fileUpload">
+  <button type="submit" (click)="uploadFile(files)">Upload</button>
+</form>
 
