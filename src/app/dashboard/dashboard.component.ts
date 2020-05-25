@@ -1,15 +1,21 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TaskRepository} from '../auth/repositories/task.repository';
 import {Subscription} from 'rxjs';
 import {Task} from '../models/task';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {select, Store} from '@ngrx/store';
-import {getProfile, getTask} from '../auth/store';
+import {getTask} from '../auth/store';
 import * as fromApp from '../auth/store/index';
 import {AuthRepository} from '../auth/repositories/auth.repository';
 import {User} from '../models/user';
 import {Router} from '@angular/router';
 import {map} from 'rxjs/operators';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {ToastrService} from 'ngx-toastr';
+import {Constants} from '../utils/constants';
+import {FileUploader} from 'ng2-file-upload';
+
+const URL = 'http://localhost:3000/users/profile/avatar';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,8 +23,11 @@ import {map} from 'rxjs/operators';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  @ViewChild('fileUpload', {static: false}) fileUpload: ElementRef;
-  files: [];
+  public uploader: FileUploader = new FileUploader({
+    url: URL,
+    authToken: `Bearer ${localStorage.getItem(Constants.AUTH_TOKEN)}`,
+    itemAlias: 'avatar',
+  });
   form: FormGroup;
   profile: User;
   isFetched = false;
@@ -29,12 +38,19 @@ export class DashboardComponent implements OnInit {
               private router: Router,
               private taskRepository: TaskRepository,
               private authRepository: AuthRepository,
+              private http: HttpClient,
+              private toastr: ToastrService,
               private store: Store<fromApp.AppState>) {
     // this.tasks = store.pipe(select('task'));
     this.form = this.formBuilder.group({
       description: ['', [Validators.required, Validators.email]],
       completed: ['', Validators.required]
     });
+
+    this.uploader.response.subscribe((res) => {
+      console.log(res);
+    });
+
   }
 
   ngOnInit() {
@@ -51,6 +67,14 @@ export class DashboardComponent implements OnInit {
       console.log('[Task]', error);
       alert(error.member);
     });
+
+    this.uploader.onAfterAddingFile = (file) => {
+      file.withCredentials = false;
+    };
+    this.uploader.onCompleteItem = (item: any, status: any) => {
+      console.log('Uploaded File Details:', item);
+      this.toastr.success('File successfully uploaded!');
+    };
   }
 
   onSubmit(form) {
@@ -104,15 +128,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  uploadFile(file) {
-    const formData = new FormData();
-    formData.append('file', file.data);
-    file.inProgress = true;
-    this.authRepository.uploadProfile(formData).subscribe((res) => {
-      console.log(res.data);
-    }, error => {
-      console.log(error);
-    });
+
+  onFileselect($event: File[]) {
+    console.log($event);
   }
 }
 

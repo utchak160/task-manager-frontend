@@ -130,7 +130,7 @@ export class AuthRepository {
     );
  }
 
- uploadProfile(formData): Observable<ShowResponse<string>> {
+ uploadProfile(formData: FormData): Observable<ShowResponse<string>> {
     return this.authService.uploadProfile(formData).pipe(
       take(1),
       tap((res) => {

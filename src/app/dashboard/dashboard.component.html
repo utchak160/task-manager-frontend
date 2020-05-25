@@ -30,9 +30,14 @@
 
 <button (click)="onDelete()">Delete Account?</button>
 
-<form>
-  <label for="fileUpload">Choose File</label>
-  <input type="file" #fileUpload id="fileUpload" name="fileUpload">
-  <button type="submit" (click)="uploadFile(files)">Upload</button>
-</form>
 
+<div class="wrapper">
+  <h2>Angular Image Upload Demo</h2>
+
+  <div class="file-upload">
+    <input type="file" name="image" ng2FileSelect [uploader]="uploader" (onFileSelected)="onFileselect($event)" accept="image/x-png,image/gif,image/jpeg" />
+    <button type="button" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+      Upload
+    </button>
+  </div>
+</div>
